@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Checkbox from "@mui/joy/Checkbox";
 import DropDownComponent from "./DropDownComponent";
 import {
@@ -11,8 +11,9 @@ import {
   TextField,
   Box,
   styled,
+  FormGroup,
+  FormControlLabel,
 } from "@mui/material";
-
 const lightPinkColor = alpha("#F8F8FF", 0.7);
 
 const StyledBox = styled(Box)({
@@ -24,6 +25,54 @@ const CheckBoxStyle = styled(Box)({
   marginTop: "10px",
 });
 export default function FormComponent() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [age, setAge] = useState("");
+  const [comment, setComment] = useState("");
+  const [chosenOption, setChosenOption] = useState("");
+  const [emailError, setEmailError] = useState("");
+
+  const [checkedServices, setCheckedServices] = useState([]);
+
+  const handleCheckboxChange = (event) => {
+    const service = event.target.value;
+    setCheckedServices((prevCheckedServices) =>
+      event.target.checked
+        ? [...prevCheckedServices, service]
+        : prevCheckedServices.filter((s) => s !== service)
+    );
+  };
+
+  const resetForm = () => {
+    setName("");
+    setEmail("");
+    setAge("");
+    setComment("");
+    setChosenOption("");
+    setCheckedServices([]);
+    setEmailError("");
+  };
+
+  function formDataHandler() {
+    const formData = {
+      name: name,
+      email: email,
+      age: age,
+      comment: comment,
+      selectedVal: chosenOption,
+      selectedServices: checkedServices,
+    };
+    console.log(formData);
+    resetForm();
+  }
+  const validateEmail = () => {
+    if (!email) {
+      setEmailError("Please enter a valid email");
+    } else {
+      formDataHandler();
+    }
+  };
+
   return (
     <>
       <Card
@@ -45,6 +94,9 @@ export default function FormComponent() {
                 width: "100%",
                 padding: "8px",
               }}
+              onChange={(event) => setName(event.target.value)}
+              required
+              value={name}
             />
           </StyledBox>
           <StyledBox>
@@ -55,6 +107,12 @@ export default function FormComponent() {
                 width: "100%",
                 padding: "8px",
               }}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+              error={!!emailError}
+              helperText={emailError}
+              value={email}
+              type="email"
             />
           </StyledBox>
 
@@ -66,24 +124,58 @@ export default function FormComponent() {
                 width: "100%",
                 padding: "8px",
               }}
+              onChange={(event) => setAge(event.target.value)}
+              required
+              value={age}
+              type="number"
             />
           </StyledBox>
         </CardContent>
         <Typography variant="h6" sx={{ marginLeft: "24px" }}>
           Type of feedback
         </Typography>
-        <DropDownComponent/>
+        <DropDownComponent
+          setChosenFeedOption={setChosenOption}
+          chosenOption={chosenOption}
+        />
         <Typography variant="h6" sx={{ marginLeft: "24px", marginTop: "10px" }}>
           Services Used
         </Typography>
         <CheckBoxStyle>
-          <Checkbox label="Service 1" />
-        </CheckBoxStyle>
-        <CheckBoxStyle>
-          <Checkbox label="Service 2" />
-        </CheckBoxStyle>
-        <CheckBoxStyle>
-          <Checkbox label="Service 3" />
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  value="Service 1"
+                  checked={checkedServices.includes("Service 1")}
+                  onChange={handleCheckboxChange}
+                />
+              }
+              label="Service 1"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  value="Service 2"
+                  checked={checkedServices.includes("Service 2")}
+                  onChange={handleCheckboxChange}
+                />
+              }
+              label="Service 2"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  value="Service 3"
+                  checked={checkedServices.includes("Service 3")}
+                  onChange={handleCheckboxChange}
+                />
+              }
+              label="Service 3"
+            />
+          </FormGroup>
+
+          <p>Selected services: {checkedServices.join(", ")}</p>
         </CheckBoxStyle>
         <Typography
           variant="h6"
@@ -99,6 +191,9 @@ export default function FormComponent() {
             rows={4}
             variant="outlined"
             sx={{ width: "100%" }}
+            onChange={(event) => setComment(event.target.value)}
+            required
+            value={comment}
           />
         </StyledBox>
         <CardActions sx={{ paddingTop: "50px", paddingBottom: "50px" }}>
@@ -110,6 +205,8 @@ export default function FormComponent() {
               marginLeft: "24px",
               textTransform: "none",
             }}
+            onClick={formDataHandler}
+            // onClick={validateEmail}
           >
             Submit Feedback
           </Button>
