@@ -1,22 +1,19 @@
 import { Dropdown, MenuButton, Menu, MenuItem } from "@mui/joy";
-import { useState } from "react";
 
-export default function DropDownComponent() {
-  const [chosenOption, setChosenOption] = useState("");
-
+export default function DropDownComponent({
+  setChosenFeedOption,
+  chosenOption,
+}) {
   return (
-    <Dropdown
-      fullWidth
-      sx={{ width: "100%", marginLeft: "24px", marginRight: "24px" }}
-    >
-      <MenuButton fullWidth>
+    <Dropdown>
+      <MenuButton  sx={{ marginLeft: "24px"}}>
         {chosenOption === "" ? "Select your feedback" : chosenOption}
       </MenuButton>
-      <Menu fullWidth>
-        <MenuItem onClick={(event) => setChosenOption("Positive")}>
+      <Menu>
+        <MenuItem onClick={(event) => setChosenFeedOption("Positive")}>
           Positive
         </MenuItem>
-        <MenuItem onClick={(event) => setChosenOption("Negative")}>
+        <MenuItem onClick={(event) => setChosenFeedOption("Negative")}>
           Negative
         </MenuItem>
       </Menu>
